@@ -79,7 +79,7 @@ class UsersMiddleware {
         res: express.Response,
         next: express.NextFunction
     ) {
-        req.body._id = req.params.userId;
+        req.body.id = req.params.userId;
         next();
     }
 }

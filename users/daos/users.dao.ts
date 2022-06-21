@@ -8,7 +8,6 @@ import mongooseService from '../../common/services/mongoose.service';
 const log: debug.IDebugger = debug('app:in-memory-dao');
 
 class UsersDao {
-    users: Array<CreateUserDto> = [];
     Schema = mongooseService.getMongoose().Schema;
 
     userSchema = new this.Schema({
@@ -36,7 +35,7 @@ class UsersDao {
         await user.save();
         return userId;
     }
-    
+
     async getUserByEmail(email: string) {
         return this.User.findOne({ email: email }).exec();
     }
