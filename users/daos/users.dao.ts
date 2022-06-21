@@ -1,11 +1,12 @@
+import mongooseService from '../../common/services/mongoose.service';
+import shortid from 'shortid';
+import debug from 'debug';
 import { CreateUserDto } from '../dto/create.user.dto';
 import { PatchUserDto } from '../dto/patch.user.dto';
 import { PutUserDto } from '../dto/put.user.dto';
-import shortid from 'shortid';
-import debug from 'debug';
-import mongooseService from '../../common/services/mongoose.service';
+import { PermissionFlag } from '../../common/middleware/common.permissionflag.enum';
 
-const log: debug.IDebugger = debug('app:in-memory-dao');
+const log: debug.IDebugger = debug('app:users-dao');
 
 class UsersDao {
     Schema = mongooseService.getMongoose().Schema;
@@ -30,7 +31,7 @@ class UsersDao {
         const user = new this.User({
             _id: userId,
             ...userFields,
-            permissionFlags: 1,
+            permissionFlags: PermissionFlag.FREE_PERMISSION,
         });
         await user.save();
         return userId;
@@ -39,11 +40,21 @@ class UsersDao {
     async getUserByEmail(email: string) {
         return this.User.findOne({ email: email }).exec();
     }
-    
+
+    async getUserByEmailWithPassword(email: string) {
+        return this.User.findOne({ email: email })
+            .select('_id email permissionFlags +password')
+            .exec();
+    }
+
+    async removeUserById(userId: string) {
+        return this.User.deleteOne({ _id: userId }).exec();
+    }
+
     async getUserById(userId: string) {
         return this.User.findOne({ _id: userId }).populate('User').exec();
     }
-    
+
     async getUsers(limit = 25, page = 0) {
         return this.User.find()
             .limit(limit)
@@ -60,12 +71,8 @@ class UsersDao {
             { $set: userFields },
             { new: true }
         ).exec();
-    
-        return existingUser;
-    }
 
-    async removeUserById(userId: string) {
-        return this.User.deleteOne({ _id: userId }).exec();
+        return existingUser;
     }
 }
 

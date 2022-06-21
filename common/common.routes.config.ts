@@ -8,9 +8,8 @@ export abstract class CommonRoutesConfig {
         this.name = name;
         this.configureRoutes();
     }
-    getName() {
+    getName(): string {
         return this.name;
     }
-
     abstract configureRoutes(): express.Application;
 }
