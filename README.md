@@ -1,4 +1,4 @@
-In this file I will outline the process that went into creating this project as a list of steps.
+In this file I will outline the process that went into creating this project as a list of steps provided by Marcos Henrique da Silva in more detail.
 
 in terminal:
     npm init
@@ -42,3 +42,24 @@ Then created:
     ./users/middleware/users.middleware.ts
 
 At this point, all is functioning, but an in-memory database is being used, next is to integrate an external (persistent) database such as MongoDB 
+
+docker is installed to the OS and docker.compose.yml is created.
+
+next in terminal (windows):
+
+    docker-compose up -d 
+
+or in ubuntu:
+    sudo docker-compose up -d
+
+This errors if docker itself isn't running (and running as administrator)
+
+to shut down the docker:
+    docker-compose down 
+
+next:
+    npm i mongoose
+
+keep in mind, using MONGO, _id is inherent so replace id with _id
+
+the CRUD system in users.dao.ts is reconstructed
